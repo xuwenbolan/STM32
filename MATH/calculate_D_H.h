@@ -3,8 +3,6 @@
 #include "main.h"
 #include "arm_math.h"
 #include "arm_const_structs.h"
-//#include "PWM_Calculation.h"
-
 
 #define l0 0.150f
 #define l1 0.099f
@@ -13,40 +11,20 @@
 extern 	float angle_Gamma;
 void inti_ROB(void);
 
-//extern float an1[180],an2[180],an3[180];
-
-
-//typedef struct
-//{
-//	float m;
-//	float n;
-//	float k;
-//	float a;
-//	float b;
-//	float c;
-//	float theta1;
-//	float theta2;
-//	float theta3;
-//	float s1ps2;
-//	float Alpha ;
-//}D_H_;
-
-
-
-//u8 Kinematic_Analysis(float x,float y);
-
-
-
 typedef struct
 {
 	float theta1;
 	float theta2;
 	float theta3;
 	float theta4;
+	float theta5;
+	float theta6;
 	float t1;
 	float t2;
 	float t3;
 	float t4;
+	float t5;
+	float t6;
 	float a1;
 	float a2;
 	float a3;

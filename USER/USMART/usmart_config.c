@@ -29,7 +29,7 @@ struct _m_usmart_nametab usmart_nametab[]=
 			//(void*) test_Send,"void test_Send(char *str)",
 			(void*) test_PWM,"test_PWM(int flag1,float angle1,int flag2,float angle2,int flag3,float angle3,int flag4,float angle4)",
 			(void*)set_ARM_state_test,"void set_ARM_state_test(int flag1 ,int x,int flag2,int y,int flag3,int z)",
-				(void*)set_angle_fun,"void set_angle_fun(int t1, int t2, int t3,int t4)",
+				(void*)set_angle_fun,"void set_angle_fun(int t1, int t2, int t3,int t4,int t5,int t6)",
 			(void*)test_arm_oc_pwm,"void test_arm_oc_pwm(int id,int rate)",
 			
 			

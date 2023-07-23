@@ -6,7 +6,7 @@
 	float ang[4];
 	int cal_flag=1; 
 	int angle_turn[4];
-	int angle_turn2[4];
+	int angle_turn2[6];
 	float angle_Gamma=0.0f;
 int* angle_turn_pwm(float *angle_in)
 {
@@ -96,6 +96,21 @@ int angle_turn_pwm_2(angle *ARM_STATE)
 	{
 		angle_turn2[3]=1500+(int)((ARM_STATE->theta3+5)*7.40f+0.50f);
 	}
+	
+	if(angle_turn2[4]>0)
+	{
+		angle_turn2[4]=1500+(int)((ARM_STATE->theta5+5)*7.40f+0.50f);
+	}
+	else
+	{
+		angle_turn2[4]=1500+(int)((ARM_STATE->theta5+5)*7.40f+0.50f);
+	}
+	
+	if(ARM_STATE->t6>=90)
+	{
+		angle_turn2[5]=500;
+	}
+	else angle_turn2[5]=1500;
 
 //	printf("%d,%d,%d,%d\r\n",angle_turn[0],angle_turn[1],angle_turn[2],angle_turn[3]);
 	
@@ -103,25 +118,6 @@ int angle_turn_pwm_2(angle *ARM_STATE)
 	
 return 1;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
  void character_turning(int *pwm)
 {
@@ -140,7 +136,6 @@ return 1;
 	
 
 	strcat(str1 ,_end);
-	//strcat_s(total,11, str2);
 	Usart_SendString(USART2,str1);
 	printf("%s",str1);
 }
@@ -185,8 +180,6 @@ character_turning(turn);
 
 
 	float ROB_R;
-	//float ROB_target _temp;
-	//float OUTPUT_date[3];
 	float Sx, Sy, Sz,T_temp,_S,_G;
 
 int ROB_GO_STR(angle *state)
@@ -209,29 +202,26 @@ int ROB_GO_STR(angle *state)
 	ROB_R = state->r_x;
 	//_temp = state->r_x;
 
-	if ((_S<0.005f)&&(_S>-0.005f))
+	if ((_S<0.05f)&&(_S>-0.05f))
 	{
 			state->r_x=state->G_x;
 			//_temp = state->r_y;
 			_S = Sy;
 			_G = state->G_y;
-			//ROB_target = state->G_y;
 			ROB_R = state->r_y;
 			
 		
-		 if ((_S<0.005f)&&(_S>-0.005f))
+		 if ((_S<0.05f)&&(_S>-0.05f))
 		{
 			state->r_y=state->G_y;
-			//_temp = state->r_z;
 			_S = Sz;
 			_G = state->G_z;
-			//ROB_target =state->G_z;
 			ROB_R = state->r_z;
 			
 		}
 		
 		
-		 if ((_S<0.005f)&&(_S>-0.005f))
+		 if ((_S<0.05f)&&(_S>-0.05f))
 		{
 			 state->r_z=state->G_z;
 			 return 0;
@@ -240,25 +230,17 @@ int ROB_GO_STR(angle *state)
 
 		
 	}
-//			if(_S>=0.001)
-//		{
-//			printf("chang\r\n");
-//			v_pid.Integral_err=0.0f;
-//			v_pid._err=0.0f;
-//			v_pid._last_err=0.0f;
-//		}
-	//v_pid.Integral_err=ROB_R/v_pid.Ki;
+
 	cal_flag=0;
 }
-		
-		//ROB_R = Val_PID(ROB_R, _G, &v_pid);
+
 	if(_S>0)
 	{
-		ROB_R+=0.005;
+		ROB_R+=0.01;
 	}
 	else
 	{
-		ROB_R-=0.005;
+		ROB_R-=0.01;
 	}
 
 		T_temp = (ROB_R - _G) / _S;
@@ -266,8 +248,8 @@ int ROB_GO_STR(angle *state)
 		state->r_y = Sy * T_temp +	state->G_y;
 		state->r_z = Sz * T_temp +	state->G_z;
 		
-		if(((ROB_R-_G)<=0.008)
-			&&((ROB_R-_G)>=-0.008))
+		if(((ROB_R-_G)<=0.08)
+			&&((ROB_R-_G)>=-0.08))
 		{
 			ROB_R=_G;
 		}
@@ -305,11 +287,13 @@ void test_angle_turn(void)
 {
 	mo_2(&ROB_ARM);
 	angle_turn_pwm_2(&ROB_ARM);
-	printf("%f,%f,%f,%f\r\n",ROB_ARM.theta4,ROB_ARM.theta1,ROB_ARM.theta2,ROB_ARM.theta3);
+	printf("%f,%f,%f,%f,%f,%f\r\n",ROB_ARM.theta4,ROB_ARM.theta1,ROB_ARM.theta2,ROB_ARM.theta3,ROB_ARM.theta5,ROB_ARM.theta6);
 	LL_TIM_OC_SetCompareCH1(TIM3,angle_turn2[0]);
 	LL_TIM_OC_SetCompareCH2(TIM3,angle_turn2[1]);
 	LL_TIM_OC_SetCompareCH3(TIM3,angle_turn2[2]);
 	LL_TIM_OC_SetCompareCH4(TIM3,angle_turn2[3]);
+	LL_TIM_OC_SetCompareCH1(TIM9,angle_turn2[4]);
+	LL_TIM_OC_SetCompareCH2(TIM9,angle_turn2[5]);
 }
 
 void mo_2(angle *ARM)
@@ -344,6 +328,12 @@ void mo_2(angle *ARM)
 	
 	if(ARM->t4 - ARM->theta4> 0.05)ARM->theta4+=0.4;
 	else if(ARM->theta4 - ARM->t4> 0.05 )ARM->theta4-=0.4;
+	
+	if(ARM->t5 - ARM->theta5> 0.05)ARM->theta5+=0.4;
+	else if(ARM->theta5 - ARM->t5> 0.05 )ARM->theta5-=0.4;
+	
+	if(ARM->t6 - ARM->theta6> 0.05)ARM->theta6+=0.4;
+	else if(ARM->theta6 - ARM->t6> 0.05 )ARM->theta6-=0.4;
 }
 
 int mo(float x, float y,float z)
@@ -411,16 +401,6 @@ void set_ARM_state_test(int flag1 ,int x,int flag2,int y,int flag3,int z)
 		ROB_ARM.res_y=save_num[1];
 		ROB_ARM.res_z=save_num[2];
 
-//	if( ((ROB_ARM.G_x-ROB_ARM.r_x>0.0001f)||(ROB_ARM.G_x-ROB_ARM.r_x<-0.0001f))
-//		||((ROB_ARM.G_y-ROB_ARM.r_y>0.0001f)||(ROB_ARM.G_y-ROB_ARM.r_y<-0.0001f))
-//		||((ROB_ARM.G_x-ROB_ARM.r_x>0.0001f)||(ROB_ARM.G_x-ROB_ARM.r_x<-0.0001f)))
-//		{
-//			v_pid.Integral_err=0.0f;
-//			v_pid._err=0.0f;
-//			v_pid._last_err=0.0f;
-//		
-//		}
-
 	cal_flag=1;
 }
 
@@ -434,12 +414,14 @@ void ARM_REC(float *rec_coor)
 
 
 
-void set_angle_fun(int t1, int t2, int t3,int t4)
+void set_angle_fun(int t1, int t2, int t3,int t4,int t5,int t6)
 {
 	ROB_ARM.t4 = t1;
 	ROB_ARM.t1 = t2;
 	ROB_ARM.t2 = t3;
 	ROB_ARM.t3 = 90-t2-t3;
+	ROB_ARM.t5 = t5;
+	ROB_ARM.t6 = t6;  
 }
 
 

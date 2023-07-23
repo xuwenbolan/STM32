@@ -39,13 +39,7 @@ float a=1500.0f;
 int task_check_flag=0;
 int count_num=0;
 int flag_eq=0;
-/*
-rec_data_sovle[0]:x
-rec_data_sovle[1]:y
-rec_data_sovle[2]:z
-rec_data_sovle[0]:cmd
 
-*/
 float rec_data_sovle[4]={0};
 
 
@@ -64,15 +58,6 @@ void SystemClock_Config(void);
 	
 	if((task_check_flag)&&(break_flag!=1))
 	{
-
-//															Usart_SendString(USART6,USART_DATA_REC_x);
-//															Usart_SendString(USART6,"\r\n");
-//															Usart_SendString(USART6,USART_DATA_REC_y);
-//															Usart_SendString(USART6,"\r\n");
-//															Usart_SendString(USART6,USART_DATA_REC_z);
-//															Usart_SendString(USART6,"\r\n");
-//															Usart_SendString(USART6,USART_DATA_REC_cmd);
-//															Usart_SendString(USART6,"\r\n");
 		
 
 		if(rec_data_sovle[1]!=atoi(USART_DATA_REC_x))
@@ -85,42 +70,6 @@ void SystemClock_Config(void);
 		rec_data_sovle[1]=atoi(USART_DATA_REC_x);
 		rec_data_sovle[2]=atoi(USART_DATA_REC_y);
 		rec_data_sovle[3]=atoi(USART_DATA_REC_cmd);
-//			Usart_SendString(USART6,"\r\n");
-//    Usart_SendByte(USART6,rec_data_sovle[0]);
-//			Usart_SendString(USART6,"\r\n");
-//		Usart_SendByte(USART6,rec_data_sovle[1]);
-//			Usart_SendString(USART6,"\r\n");
-//		Usart_SendByte(USART6,rec_data_sovle[2]);
-//			Usart_SendString(USART6,"\r\n");
-//		Usart_SendByte(USART6,rec_data_sovle[3]);
-//			Usart_SendString(USART6,"\r\n");
-		
-
-//	if(rec_data_sovle[3]==1)
-//	{
-//			set_angle_fun(0.0f, 0.1f, 0.20f);
-//			LL_mDelay(700);
-//			set_angle_fun(0.0f, 0.2f, 0.15f);
-//			LL_mDelay(700);
-//			set_angle_fun(0.0f, 0.30f, 0.5f);
-//			LL_mDelay(700);
-//			set_angle_fun(0.0f, 0.20f, 0.25f);
-//			LL_mDelay(700);
-//			set_angle_fun(0.0f, 0.10f, 0.20f);
-//			LL_mDelay(700);
-//			set_angle_fun(0.10f, 0.0f, 0.20f);
-//		LL_mDelay(700);
-//		ARM_REC(rec_data_sovle);
-//		set_angle_fun(rec_data_sovle[0],rec_data_sovle[1],rec_data_sovle[2]);
-//		LL_mDelay(700);
-//		
-//	}
-//	else if(rec_data_sovle[3]==0)
-//	{
-//		LL_mDelay(700);
-//		set_angle_fun(0.10f, 0.0f, 0.20f);
-//		LL_mDelay(700);
-//	}
 	
 	
 }
@@ -158,13 +107,16 @@ flag_eq=0;
 		Usart_SendString(USART6,"AT+CIPSTART=\"TCP\",\"192.168.4.1\",8000\r\n");
 		LL_mDelay(1000);
 	}
-	
+
 	void PWM_REALLY(void)
 	{
 			LL_TIM_OC_SetCompareCH1(TIM3,1500);
 			LL_TIM_OC_SetCompareCH2(TIM3,1234);
 			LL_TIM_OC_SetCompareCH3(TIM3,1500);
 			LL_TIM_OC_SetCompareCH1(TIM3,1500);
+
+			LL_TIM_OC_SetCompareCH1(TIM9,1500);
+			LL_TIM_OC_SetCompareCH2(TIM9,1500);
 	}
 	
 void BSP_INIT(void)
@@ -219,13 +171,13 @@ MX_USART2_UART_Init();
 int main(void)
 {
 
-BSP_INIT();
+	BSP_INIT();
+		
+	PWM_REALLY();
+	LL_mDelay(300);
 	
-PWM_REALLY();
-LL_mDelay(300);
-
-	
-LL_mDelay(500);
+		
+	LL_mDelay(500);
 
   while (1)
   {
@@ -252,6 +204,10 @@ void test_arm_oc_pwm(int id,int rate)
 			LL_TIM_OC_SetCompareCH3(TIM3,rate);
 	else if(id==4)
 			LL_TIM_OC_SetCompareCH4(TIM3,rate);
+	else if(id==5)
+			LL_TIM_OC_SetCompareCH1(TIM9,rate);
+	else if(id==6)
+			LL_TIM_OC_SetCompareCH2(TIM9,rate);
 }
 
 

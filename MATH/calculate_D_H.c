@@ -23,10 +23,14 @@ void inti_ROB(void)
 	ROB_ARM.theta2=0.0f;
 	ROB_ARM.theta3=0.0f;
 	ROB_ARM.theta4=0.0f;
+	ROB_ARM.theta5=0.0f;
+	ROB_ARM.theta6=0.0f;
 	ROB_ARM.t1=0.0f;
 	ROB_ARM.t2=0.0f;
 	ROB_ARM.t3=0.0f;
 	ROB_ARM.t4=0.0f;
+	ROB_ARM.t5=0.0f;
+	ROB_ARM.t6=0.0f;
 	ROB_ARM.a1 = 0.1045f;
 	ROB_ARM.a2 = 0.0985f;
 	ROB_ARM.a3 = 0.268f;
